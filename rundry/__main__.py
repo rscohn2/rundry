@@ -17,7 +17,7 @@ app = typer.Typer(
 console = Console()
 
 db_file_option = typer.Option("weather.db", help="Weather database file.")
-app_id_option = typer.Option("", help="OpenWeather App ID.")
+app_id_option = typer.Option(..., help="OpenWeather App ID.")
 
 
 @app.command()

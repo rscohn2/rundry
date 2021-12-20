@@ -26,27 +26,23 @@ def insert_day(con, day):
             )
 
 
-def get_day(days):
+def get_day(days, appid, lat, long):
     timestamp = int(
         (datetime.datetime.utcnow() - datetime.timedelta(days=days)).timestamp()
     )
-    appid = "bae2645075eb396dccf84f2788ea9122"
-    lat = "42.77014807397615"
-    lon = "-71.274322339134"
     url = (
         "https://api.openweathermap.org/data/2.5/onecall/timemachine?"
-        f"lat={lat}&lon={lon}&units=imperial&dt={timestamp}&appid={appid}"
+        f"lat={lat}&lon={long}&units=imperial&dt={timestamp}&appid={appid}"
     )
-    print(f"Request {url}")
     data = requests.get(url).json()
     return data
 
 
-def update(db_file, app_id, lat, long):
+def update(db_file, appid, lat, long):
     with contextlib.closing(sqlite3.connect(db_file)) as con:
         create_table(con)
         for days in [1, 2, 3, 4, 5]:
-            insert_day(con, get_day(days))
+            insert_day(con, get_day(days, appid, lat, long))
 
 
 def show(db_file):
