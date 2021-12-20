@@ -3,6 +3,7 @@
 # Edit at https://www.gitignore.io/?templates=osx,python,pycharm,windows,visualstudio,visualstudiocode
 
 /venv
+/weather.db
 
 ### OSX ###
 # General
