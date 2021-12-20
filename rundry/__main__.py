@@ -7,18 +7,7 @@ from random import choice
 import typer
 from rich.console import Console
 
-from rundry import version
-from rundry.example import hello
-
-
-class Color(str, Enum):
-    white = "white"
-    red = "red"
-    cyan = "cyan"
-    magenta = "magenta"
-    yellow = "yellow"
-    green = "green"
-
+import rundry.weather as weather
 
 app = typer.Typer(
     name="rundry",
@@ -27,40 +16,25 @@ app = typer.Typer(
 )
 console = Console()
 
-
-def version_callback(print_version: bool) -> None:
-    """Print the version of the package."""
-    if print_version:
-        console.print(f"[yellow]rundry[/] version: [bold blue]{version}[/]")
-        raise typer.Exit()
+db_file_option = typer.Option("weather.db", help="Weather database file.")
+app_id_option = typer.Option(..., help="OpenWeather App ID.")
 
 
-@app.command(name="")
-def main(
-    name: str = typer.Option(..., help="Person to greet."),
-    color: Optional[Color] = typer.Option(
-        None,
-        "-c",
-        "--color",
-        "--colour",
-        case_sensitive=False,
-        help="Color for print. If not specified then choice will be random.",
-    ),
-    print_version: bool = typer.Option(
-        None,
-        "-v",
-        "--version",
-        callback=version_callback,
-        is_eager=True,
-        help="Prints the version of the rundry package.",
-    ),
-) -> None:
-    """Print a greeting with a giving name."""
-    if color is None:
-        color = choice(list(Color))
+@app.command()
+def update(
+    db_file: str = db_file_option,
+    app_id: str = app_id_option,
+    lat: str = typer.Option("42.77014807397615", help="Lattitude for home"),
+    long: str = typer.Option("-71.274322339134", help="Longitude for home"),
+):
+    weather.update(db_file, app_id, lat, long)
 
-    greeting: str = hello(name)
-    console.print(f"[bold {color}]{greeting}[/]")
+
+@app.command()
+def show(
+    db_file: str = db_file_option,
+):
+    weather.show(db_file)
 
 
 if __name__ == "__main__":
